@@ -288,39 +288,97 @@ function jClass(j){
 // CSV PARSER — cocok dengan format Google Sheets
 // ════════════════════════════════════════════════
 function parseCSV(text){
-  const rows = [];
-  const lines = text.trim().split('\n');
-  for(let i=0;i<lines.length;i++){
-    const cols = [];
+  // Split baris, handle \r\n dan \n
+  const lines = text.trim().split(/\r?\n/);
+
+  // Fungsi split satu baris CSV (handle quoted fields)
+  function splitLine(line){
+    const cols=[];
     let cur='', inQ=false;
-    for(let c=0;c<lines[i].length;c++){
-      const ch=lines[i][c];
-      if(ch==='"'&&inQ&&lines[i][c+1]==='"'){cur+='"';c++;}
+    for(let c=0;c<line.length;c++){
+      const ch=line[c];
+      if(ch==='"'&&inQ&&line[c+1]==='"'){cur+='"';c++;}
       else if(ch==='"'){inQ=!inQ;}
       else if(ch===','&&!inQ){cols.push(cur.trim());cur='';}
       else{cur+=ch;}
     }
     cols.push(cur.trim());
-    rows.push(cols);
+    return cols;
   }
-  // Baris pertama = header
-  // Kolom sheet: No, Jenis, Nomor, Tahun, Tentang, Instansi, Tanggal, Status, Bidang, Link
-  const header = rows[0].map(h=>h.toLowerCase().replace(/[^a-z]/g,''));
+
+  // Cari baris header — baris yang mengandung kolom utama
+  // Bisa di baris 0, 1, 2, atau 3 tergantung format sheet
+  const HEADER_KEYWORDS = ['jenis','nomor','tahun','tentang','instansi','status','bidang'];
+  let headerIdx = -1;
+  for(let i=0;i<Math.min(lines.length,6);i++){
+    const low = lines[i].toLowerCase();
+    const matches = HEADER_KEYWORDS.filter(k=>low.includes(k)).length;
+    if(matches >= 3){ headerIdx = i; break; }
+  }
+
+  // Kalau tidak ketemu header, coba anggap baris pertama yang punya banyak koma
+  if(headerIdx === -1){
+    for(let i=0;i<Math.min(lines.length,6);i++){
+      if((lines[i].match(/,/g)||[]).length >= 6){ headerIdx = i; break; }
+    }
+  }
+  if(headerIdx === -1) headerIdx = 0;
+
+  // Parse header untuk cari posisi kolom
+  const headerCols = splitLine(lines[headerIdx]).map(h=>h.toLowerCase().replace(/[^a-z]/g,''));
+  
+  // Mapping nama kolom ke indeks — fleksibel
+  function findCol(keywords){
+    for(const kw of keywords){
+      const idx = headerCols.findIndex(h=>h.includes(kw));
+      if(idx>=0) return idx;
+    }
+    return -1;
+  }
+
+  const iNo      = findCol(['no']);
+  const iJenis   = findCol(['jenis']);
+  const iNomor   = findCol(['nomor']);
+  const iTahun   = findCol(['tahun']);
+  const iTentang = findCol(['tentang']);
+  const iInstansi= findCol(['instansi']);
+  const iTanggal = findCol(['tanggal']);
+  const iStatus  = findCol(['status']);
+  const iBidang  = findCol(['bidang']);
+  const iLink    = findCol(['link','download','url']);
+
+  // Fallback: kalau tidak ada header sama sekali, pakai posisi default
+  // (No=0,Jenis=1,Nomor=2,Tahun=3,Tentang=4,Instansi=5,Tanggal=6,Status=7,Bidang=8,Link=9)
+  const getCol = (r,i,fallback) => i>=0 && i<r.length ? r[i]||'' : (fallback<r.length?r[fallback]||'':'');
+
   const data = [];
-  for(let i=1;i<rows.length;i++){
-    const r=rows[i];
-    if(!r[1]&&!r[4])continue; // skip baris kosong
+  let autoNo = 0;
+  for(let i=headerIdx+1;i<lines.length;i++){
+    if(!lines[i].trim()) continue;
+    const r = splitLine(lines[i]);
+    
+    const jenis   = getCol(r,iJenis,1);
+    const tentang = getCol(r,iTentang,4);
+    const status  = getCol(r,iStatus,7);
+    const bidang  = getCol(r,iBidang,8);
+
+    // Skip baris yang tidak punya data penting
+    if(!jenis && !tentang) continue;
+    // Skip baris yang terlihat seperti header duplikat
+    if(jenis.toLowerCase().includes('jenis')) continue;
+
+    autoNo++;
     data.push({
-      no:     parseInt(r[0])||i,
-      jenis:  r[1]||'',
-      nomor:  r[2]||'',
-      tahun:  r[3]||'',
-      tentang:r[4]||'',
-      instansi:r[5]||'',
-      tanggal:r[6]||'',
-      status: r[7]||'',
-      bidang: r[8]||'',
-      link:   r[9]||''
+      no:      parseInt(getCol(r,iNo,0))||autoNo,
+      jenis:   jenis,
+      nomor:   getCol(r,iNomor,2),
+      tahun:   getCol(r,iTahun,3),
+      tentang: tentang,
+      instansi:getCol(r,iInstansi,5),
+      tanggal: getCol(r,iTanggal,6),
+      status:  status,
+      bidang:  bidang,
+      link:    getCol(r,iLink,9)
     });
   }
   return data;

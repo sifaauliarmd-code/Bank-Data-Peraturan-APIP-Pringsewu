@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank Data Peraturan Digital — Inspektorat Kab. Pringsewu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D2137;--navy-m:#1A3A5C;--teal:#0B6E72;--teal-l:#0D9EA5;--teal-xl:#5ECDD4;
+  --gold:#E8A020;--gold-l:#F5C842;--white:#FFFFFF;--off:#F4F7FA;--off2:#EBF0F6;
+  --gray:#64748B;--gray-l:#94A3B8;--gray-xl:#CBD5E1;--text:#0F172A;
+  --green:#16A34A;--green-l:#DCFCE7;--red:#DC2626;--red-l:#FEE2E2;
+  --radius:12px;--shadow:0 4px 24px rgba(13,33,55,.10);--shadow-l:0 8px 40px rgba(13,33,55,.16);
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--navy);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--teal);border-radius:99px}
+
+/* TOPBAR */
+#topbar{position:sticky;top:0;z-index:100;background:rgba(13,33,55,.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(14,110,114,.35);padding:0 2rem;display:flex;align-items:center;gap:1rem;height:60px}
+.logo-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--teal),var(--teal-l));display:grid;place-items:center;flex-shrink:0;font-size:17px}
+.logo-text{color:var(--white);font-weight:700;font-size:.95rem;line-height:1.2}
+.logo-text span{color:var(--teal-xl);font-weight:400;font-size:.75rem;display:block}
+#topbar nav{margin-left:auto;display:flex;gap:.25rem}
+#topbar nav button{background:none;border:none;cursor:pointer;color:var(--gray-l);font-family:var(--font);font-size:.82rem;padding:.4rem .85rem;border-radius:6px;transition:all .2s}
+#topbar nav button:hover,#topbar nav button.active{background:rgba(11,110,114,.25);color:var(--teal-xl)}
+
+/* SYNC BAR */
+#sync-bar{background:rgba(232,160,32,.12);border-bottom:1px solid rgba(232,160,32,.3);padding:.5rem 2rem;display:flex;align-items:center;gap:.75rem;font-size:.8rem;color:var(--gold-l)}
+#sync-bar.ok{background:rgba(22,163,74,.1);border-bottom-color:rgba(22,163,74,.3);color:#4ADE80}
+#sync-bar.err{background:rgba(220,38,38,.1);border-bottom-color:rgba(220,38,38,.3);color:#F87171}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#sync-bar.ok .sync-dot,#sync-bar.err .sync-dot{animation:none}
+#sync-btn{margin-left:auto;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:inherit;font-family:var(--font);font-size:.78rem;padding:.28rem .75rem;border-radius:6px;cursor:pointer;transition:all .2s}
+#sync-btn:hover{background:rgba(255,255,255,.2)}
+#sheet-url-input{flex:1;max-width:480px;padding:.3rem .7rem;border-radius:6px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:var(--white);font-family:var(--mono);font-size:.72rem;outline:none}
+#sheet-url-input::placeholder{color:rgba(255,255,255,.35)}
+#sheet-url-input:focus{border-color:var(--gold-l);background:rgba(255,255,255,.12)}
+
+/* HERO */
+#hero{background:linear-gradient(165deg,var(--navy) 0%,#0A2744 50%,#0B3A3E 100%);padding:3.5rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+#hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(11,110,114,.18) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.45rem;background:rgba(11,110,114,.2);border:1px solid rgba(94,205,212,.3);color:var(--teal-xl);padding:.3rem .9rem;border-radius:99px;font-size:.78rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1.25rem;animation:fadeDown .6s ease both}
+#hero h1{color:var(--white);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;line-height:1.15;max-width:680px;margin:0 auto .75rem;animation:fadeDown .6s .1s ease both}
+#hero h1 em{color:var(--gold-l);font-style:normal}
+#hero p{color:var(--gray-l);font-size:.95rem;max-width:520px;margin:0 auto 2rem;line-height:1.7;animation:fadeDown .6s .2s ease both}
+.stats-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeDown .6s .3s ease both}
+.stat-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:.9rem 1.5rem;min-width:130px;text-align:center;backdrop-filter:blur(8px)}
+.stat-card .val{font-size:2rem;font-weight:800;color:var(--white);line-height:1;display:block}
+.stat-card .lbl{font-size:.72rem;color:var(--gray-l);margin-top:.3rem;text-transform:uppercase;letter-spacing:.06em}
+.stat-card.green .val{color:#4ADE80}.stat-card.red .val{color:#F87171}.stat-card.gold .val{color:var(--gold-l)}
+.search-wrap{max-width:680px;margin:2rem auto 0;position:relative;animation:fadeDown .6s .35s ease both}
+.search-wrap input{width:100%;padding:.9rem 1.2rem .9rem 3.2rem;border-radius:10px;border:1.5px solid rgba(11,110,114,.4);background:rgba(255,255,255,.07);backdrop-filter:blur(8px);color:var(--white);font-family:var(--font);font-size:.95rem;outline:none;transition:all .2s}
+.search-wrap input::placeholder{color:var(--gray-l)}
+.search-wrap input:focus{border-color:var(--teal-l);background:rgba(255,255,255,.1);box-shadow:0 0 0 3px rgba(11,110,114,.2)}
+.search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--teal-xl);pointer-events:none;font-size:1rem}
+
+/* MAIN */
+#main{background:var(--off);min-height:calc(100vh - 60px)}
+
+/* FILTER STRIP */
+#filter-strip{background:var(--white);border-bottom:1px solid var(--gray-xl);padding:.85rem 2rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;position:sticky;top:60px;z-index:90}
+.filter-label{font-size:.78rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.07em;margin-right:.25rem;white-space:nowrap}
+.chip-group{display:flex;gap:.4rem;flex-wrap:wrap}
+.chip{padding:.32rem .85rem;border-radius:99px;border:1.5px solid var(--gray-xl);background:var(--white);font-family:var(--font);font-size:.78rem;font-weight:500;color:var(--gray);cursor:pointer;transition:all .18s;white-space:nowrap}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.chip.active{background:var(--teal);border-color:var(--teal);color:var(--white);font-weight:600}
+.chip.status-on{border-color:var(--green);color:var(--green)}.chip.status-off{border-color:var(--red);color:var(--red)}
+.chip.status-on.active{background:var(--green);color:var(--white)}.chip.status-off.active{background:var(--red);color:var(--white)}
+.filter-sep{width:1px;height:22px;background:var(--gray-xl);flex-shrink:0}
+.filter-right{margin-left:auto;display:flex;gap:.5rem;align-items:center}
+.result-count{font-size:.8rem;color:var(--gray);font-weight:500;background:var(--off2);padding:.25rem .75rem;border-radius:99px;white-space:nowrap}
+#sort-sel{padding:.3rem .7rem;border-radius:7px;border:1.5px solid var(--gray-xl);background:var(--white);font-family:var(--font);font-size:.78rem;color:var(--gray);cursor:pointer;outline:none}
+
+/* CONTENT */
+#content{padding:1.5rem 2rem 3rem;max-width:1400px;margin:0 auto}
+.view-toggle{display:flex;gap:.35rem;background:var(--off2);border-radius:8px;padding:3px;width:fit-content;margin-bottom:1.25rem;margin-left:auto}
+.view-btn{padding:.35rem .7rem;border-radius:6px;border:none;background:none;cursor:pointer;color:var(--gray);font-size:.9rem;transition:all .15s}
+.view-btn.active{background:var(--white);color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* TABLE */
+.table-wrap{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--navy)}
+th{padding:.85rem 1rem;text-align:left;color:var(--white);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--off2);transition:background .15s}
+tbody tr:hover{background:#F0F9FA}
+tbody tr:last-child{border-bottom:none}
+td{padding:.75rem 1rem;font-size:.85rem;color:var(--text);vertical-align:middle}
+td.no-col{color:var(--gray-l);font-size:.75rem;font-family:var(--mono);width:48px;text-align:center}
+td.nomor-col{width:110px;font-family:var(--mono);font-size:.78rem;color:var(--navy-m);font-weight:600}
+td.tentang-col .title{font-weight:600;color:var(--navy);font-size:.87rem;line-height:1.4}
+td.status-col{width:130px}td.bidang-col{width:180px}td.link-col{width:100px;text-align:center}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .65rem;border-radius:99px;font-size:.72rem;font-weight:700;white-space:nowrap}
+.badge-jenis{background:var(--off2);color:var(--navy-m);border:1px solid var(--gray-xl)}
+.badge-jenis.uu{background:#EDE9FE;color:#5B21B6;border-color:#C4B5FD}
+.badge-jenis.pp{background:#DBEAFE;color:#1D4ED8;border-color:#93C5FD}
+.badge-jenis.per{background:#E0F2FE;color:#0369A1;border-color:#7DD3FC}
+.badge-jenis.perbup{background:#FEF3C7;color:#B45309;border-color:#FCD34D}
+.badge-jenis.perda{background:#FCE7F3;color:#9D174D;border-color:#F9A8D4}
+.badge-jenis.se{background:#F0FDF4;color:#15803D;border-color:#86EFAC}
+.badge-status-on{background:var(--green-l);color:var(--green);border:1px solid #86EFAC}
+.badge-status-off{background:var(--red-l);color:var(--red);border:1px solid #FCA5A5}
+
+/* LINK BTN */
+.link-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .65rem;border-radius:7px;background:var(--teal);color:var(--white);font-size:.75rem;font-weight:600;text-decoration:none;transition:all .18s;border:none;cursor:pointer}
+.link-btn:hover{background:var(--teal-l);transform:translateY(-1px);box-shadow:0 4px 12px rgba(11,110,114,.3)}
+.link-btn.disabled{background:var(--gray-xl);color:var(--gray);pointer-events:none;cursor:default}
+
+/* CARD VIEW */
+#card-view{display:none}
+#card-view.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+.pcard{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem;border-top:3px solid var(--teal);transition:all .2s}
+.pcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-l)}
+.pcard-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;margin-bottom:.75rem}
+.pcard-title{font-size:.9rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:.5rem}
+.pcard-meta{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem}
+.pcard-foot{display:flex;justify-content:space-between;align-items:center;padding-top:.75rem;border-top:1px solid var(--off2)}
+.pcard-instansi{font-size:.75rem;color:var(--gray)}
+
+/* EMPTY */
+#empty{display:none;text-align:center;padding:4rem 2rem;color:var(--gray)}
+#empty .icon{font-size:3rem;margin-bottom:1rem;opacity:.4}
+#empty h3{font-size:1.1rem;color:var(--navy);margin-bottom:.4rem}
+
+/* STATS */
+#stats-view{display:none;background:var(--off);min-height:calc(100vh - 60px);padding:2rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.75rem}
+.stat-item{background:var(--white);border-radius:10px;padding:.9rem 1rem;box-shadow:var(--shadow);border-left:4px solid var(--teal);transition:all .2s}
+.stat-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-l)}
+.stat-item .s-label{font-size:.75rem;color:var(--gray);font-weight:600;margin-bottom:.3rem}
+.stat-item .s-val{font-size:1.6rem;font-weight:800;color:var(--navy);line-height:1}
+.stat-item .s-bar{height:4px;border-radius:99px;background:var(--off2);margin-top:.5rem;overflow:hidden}
+.stat-item .s-fill{height:100%;border-radius:99px;background:var(--teal)}
+
+/* LOADING */
+#loading{display:none;text-align:center;padding:3rem;color:var(--gray)}
+.spinner{width:36px;height:36px;border:3px solid var(--gray-xl);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+footer{background:var(--navy);color:var(--gray-l);text-align:center;padding:1.5rem;font-size:.78rem;border-top:1px solid rgba(255,255,255,.06)}
+footer strong{color:var(--teal-xl)}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.row-appear{animation:fadeUp .3s ease both}
+@media(max-width:768px){#filter-strip{padding:.7rem 1rem}#content{padding:1rem 1rem 3rem}#hero{padding:2.5rem 1rem 2rem}th.hide-sm,td.hide-sm{display:none}}
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <div class="logo-mark">🏛️</div>
+  <div class="logo-text">Bank Data Peraturan Digital<span>Inspektorat Kab. Pringsewu · APIP</span></div>
+  <nav>
+    <button class="active" onclick="showSection('db',this)">📋 Database</button>
+    <button onclick="showSection('stats',this)">📊 Statistik</button>
+  </nav>
+</header>
+
+<!-- SYNC BAR -->
+<div id="sync-bar">
+  <span class="sync-dot"></span>
+  <span id="sync-status">Menghubungkan ke Google Sheets…</span>
+  <input id="sheet-url-input" type="text"
+    placeholder="URL Google Sheets" value="https://docs.google.com/spreadsheets/d/e/2PACX-1vRADrE7FH1XvLZfB58GQyOxn_m52QdWQ9LOQGEpfl11h7JAYVzjo4P40K9SlZ6K6A/pub?output=csv" value="https://docs.google.com/spreadsheets/d/e/2PACX-1vRADrE7FH1XvLZfB58GQyOxn_m52QdWQ9LOQGEpfl11h7JAYVzjo4P40K9SlZ6K6A/pub?output=csv"
+    onkeydown="if(event.key==='Enter')connectSheet(this.value.trim())">
+  <button id="sync-btn" onclick="connectSheet(document.getElementById('sheet-url-input').value.trim())">🔄 Sync</button>
+</div>
+
+<section id="hero">
+  <div class="hero-badge">⚡ Digital · Terintegrasi · Aksesibel</div>
+  <h1>Bank Data Peraturan<br><em>APIP Pringsewu</em></h1>
+  <p>Pusat referensi peraturan perundang-undangan pengawasan intern pemerintah yang dapat diakses seluruh pegawai Inspektorat Kabupaten Pringsewu.</p>
+  <div class="stats-row">
+    <div class="stat-card gold"><span class="val" id="stat-total">—</span><div class="lbl">Total Peraturan</div></div>
+    <div class="stat-card green"><span class="val" id="stat-berlaku">—</span><div class="lbl">Masih Berlaku</div></div>
+    <div class="stat-card red"><span class="val" id="stat-tidak">—</span><div class="lbl">Tidak Berlaku</div></div>
+    <div class="stat-card"><span class="val">13</span><div class="lbl">Bidang Pengawasan</div></div>
+    <div class="stat-card"><span class="val">14</span><div class="lbl">Jenis Peraturan</div></div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input id="search-input" type="text" placeholder="Cari judul, nomor, instansi, atau bidang…" oninput="applyFilters()">
+  </div>
+</section>
+
+<div id="db-section">
+  <div id="filter-strip">
+    <span class="filter-label">Bidang</span>
+    <div class="chip-group" id="bidang-chips"></div>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Status</span>
+    <div class="chip-group">
+      <button class="chip status-on active" onclick="toggleStatus('Masih Berlaku',this)">✅ Masih Berlaku</button>
+      <button class="chip status-off active" onclick="toggleStatus('Tidak Berlaku',this)">❌ Tidak Berlaku</button>
+    </div>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Jenis</span>
+    <div class="chip-group" id="jenis-chips"></div>
+    <div class="filter-right">
+      <span class="result-count" id="result-count">— hasil</span>
+      <select id="sort-sel" onchange="applyFilters()">
+        <option value="no">Urut: No</option>
+        <option value="tahun-desc">Tahun ↓</option>
+        <option value="tahun-asc">Tahun ↑</option>
+        <option value="jenis">Jenis</option>
+        <option value="bidang">Bidang</option>
+      </select>
+    </div>
+  </div>
+  <div id="content">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+      <div class="view-toggle">
+        <button class="view-btn active" id="btn-table" onclick="setView('table')">☰ Tabel</button>
+        <button class="view-btn" id="btn-card" onclick="setView('card')">⊞ Kartu</button>
+      </div>
+    </div>
+    <div id="loading"><div class="spinner"></div><p>Memuat data dari Google Sheets…</p></div>
+    <div id="table-view" class="table-wrap" style="display:none">
+      <table><thead><tr>
+        <th style="width:48px">#</th>
+        <th>Jenis Peraturan</th>
+        <th>Nomor / Tahun</th>
+        <th>Tentang</th>
+        <th class="hide-sm">Instansi</th>
+        <th class="hide-sm">Status</th>
+        <th>Bidang Pengawasan</th>
+        <th>Download</th>
+      </tr></thead>
+      <tbody id="table-body"></tbody></table>
+      <div id="empty"><div class="icon">📂</div><h3>Tidak ada hasil</h3><p>Coba ubah filter atau kata kunci.</p></div>
+    </div>
+    <div id="card-view"></div>
+  </div>
+</div>
+
+<div id="stats-view">
+  <div style="max-width:1200px;margin:0 auto">
+    <h2 style="color:var(--navy);font-size:1.4rem;font-weight:800;margin-bottom:1.5rem">📊 Statistik per Bidang</h2>
+    <div id="bidang-stat-grid" class="stats-grid"></div>
+    <h2 style="color:var(--navy);font-size:1.4rem;font-weight:800;margin:2rem 0 1.5rem">🏷️ Distribusi Jenis Peraturan</h2>
+    <div id="jenis-stat-grid" class="stats-grid"></div>
+    <h2 style="color:var(--navy);font-size:1.4rem;font-weight:800;margin:2rem 0 1.5rem">🏛️ Peraturan per Instansi</h2>
+    <div id="instansi-stat-grid" class="stats-grid"></div>
+  </div>
+</div>
+
+<footer><strong>Bank Data Peraturan Digital</strong> — Inspektorat Kabupaten Pringsewu &nbsp;·&nbsp; APIP &nbsp;·&nbsp; © 2026</footer>
+
+<script>
+// ════════════════════════════════════════════════
+// DATA & STATE
+// ════════════════════════════════════════════════
+const FALLBACK = [{"no":1,"jenis":"Undang-Undang","nomor":"28","tahun":"1999","tentang":"Penyelenggaraan Negara yang Bersih dan Bebas dari KKN","instansi":"DPR RI","tanggal":"28/08/1999","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://peraturan.bpk.go.id/Details/45153"},{"no":2,"jenis":"Undang-Undang","nomor":"23","tahun":"2014","tentang":"Pemerintahan Daerah","instansi":"DPR RI","tanggal":"02/10/2014","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://peraturan.bpk.go.id/Details/38580"},{"no":3,"jenis":"Peraturan Pemerintah","nomor":"12","tahun":"2017","tentang":"Pembinaan dan Pengawasan Penyelenggaraan Pemerintahan Daerah","instansi":"Presiden RI","tanggal":"09/03/2017","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://peraturan.bpk.go.id/Details/18229"},{"no":4,"jenis":"Permendagri","nomor":"88","tahun":"2022","tentang":"Pembinaan dan Pengawasan Penyelenggaraan Pemerintahan Daerah","instansi":"Kemendagri","tanggal":"20/09/2022","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.kemendagri.go.id/dokumen/detail/4078"},{"no":5,"jenis":"Permendagri","nomor":"107","tahun":"2017","tentang":"Pedoman Nomenklatur Inspektorat Daerah","instansi":"Kemendagri","tanggal":"06/12/2017","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://peraturan.bpk.go.id/Details/116019"},{"no":6,"jenis":"Perpres","nomor":"192","tahun":"2014","tentang":"Badan Pengawasan Keuangan dan Pembangunan","instansi":"Presiden RI","tanggal":"31/12/2014","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://peraturan.bpk.go.id/Details/48680"},{"no":7,"jenis":"Permendagri","nomor":"70","tahun":"2012","tentang":"Kebijakan Pengawasan Penyelenggaraan Pemerintahan Daerah","instansi":"Kemendagri","tanggal":"20/08/2012","status":"Tidak Berlaku","bidang":"Pengawasan Umum","link":"https://peraturan.bpk.go.id/Details/56612"},{"no":8,"jenis":"Instruksi Mendagri","nomor":"1","tahun":"2021","tentang":"Instruksi Percepatan Pengawasan Penyelenggaraan Pemerintahan Daerah","instansi":"Kemendagri","tanggal":"10/01/2021","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.kemendagri.go.id"},{"no":9,"jenis":"Permendagri","nomor":"23","tahun":"2007","tentang":"Pedoman Tata Cara Pengawasan Atas Penyelenggaraan Pemerintahan Daerah","instansi":"Kemendagri","tanggal":"14/05/2007","status":"Tidak Berlaku","bidang":"Pengawasan Umum","link":"https://peraturan.bpk.go.id"},{"no":10,"jenis":"Perpres","nomor":"54","tahun":"2018","tentang":"Rencana Aksi Nasional Pencegahan dan Pemberantasan Korupsi","instansi":"Presiden RI","tanggal":"20/05/2018","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://peraturan.bpk.go.id/Details/87225"},{"no":11,"jenis":"Peraturan Daerah","nomor":"1","tahun":"2012","tentang":"Susunan Organisasi dan Tata Kerja Inspektorat Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"15/03/2012","status":"Tidak Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":12,"jenis":"Peraturan Daerah","nomor":"4","tahun":"2016","tentang":"Pembentukan dan Susunan Perangkat Daerah Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"10/09/2016","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":13,"jenis":"Peraturan Bupati","nomor":"18","tahun":"2017","tentang":"Kedudukan, Susunan Organisasi, Tugas dan Fungsi serta Tata Kerja Inspektorat Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/04/2017","status":"Tidak Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":14,"jenis":"Peraturan Bupati","nomor":"42","tahun":"2021","tentang":"Kedudukan, Susunan Organisasi, Tugas dan Fungsi Inspektorat Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"10/10/2021","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":15,"jenis":"Peraturan Bupati","nomor":"5","tahun":"2022","tentang":"Kebijakan Pengawasan Penyelenggaraan Pemerintahan Daerah Kabupaten Pringsewu Tahun 2022","instansi":"Bupati Pringsewu","tanggal":"15/01/2022","status":"Tidak Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":16,"jenis":"Peraturan Bupati","nomor":"3","tahun":"2023","tentang":"Kebijakan Pengawasan Penyelenggaraan Pemerintahan Daerah Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"10/01/2023","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":17,"jenis":"Peraturan Bupati","nomor":"7","tahun":"2024","tentang":"Kebijakan Pengawasan Penyelenggaraan Pemerintahan Daerah Kabupaten Pringsewu Tahun 2024","instansi":"Bupati Pringsewu","tanggal":"15/01/2024","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":18,"jenis":"Undang-Undang","nomor":"15","tahun":"2004","tentang":"Pemeriksaan Pengelolaan dan Tanggung Jawab Keuangan Negara","instansi":"DPR RI","tanggal":"19/07/2004","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://peraturan.bpk.go.id/Details/40756"},{"no":19,"jenis":"Peraturan BPK","nomor":"1","tahun":"2017","tentang":"Standar Pemeriksaan Keuangan Negara","instansi":"BPK RI","tanggal":"16/01/2017","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://peraturan.bpk.go.id/Details/90185"},{"no":20,"jenis":"Peraturan Pemerintah","nomor":"71","tahun":"2010","tentang":"Standar Akuntansi Pemerintahan","instansi":"Presiden RI","tanggal":"22/10/2010","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://peraturan.bpk.go.id/Details/5020"},{"no":21,"jenis":"Permendagri","nomor":"64","tahun":"2013","tentang":"Penerapan Standar Akuntansi Pemerintahan Berbasis Akrual pada Pemerintah Daerah","instansi":"Kemendagri","tanggal":"02/10/2013","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://peraturan.bpk.go.id/Details/37654"},{"no":22,"jenis":"Peraturan BPKP","nomor":"5","tahun":"2021","tentang":"Pedoman Reviu Laporan Keuangan Pemerintah Daerah","instansi":"BPKP","tanggal":"25/05/2021","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://peraturan.bpk.go.id/Details/183001"},{"no":23,"jenis":"Peraturan Pemerintah","nomor":"8","tahun":"2006","tentang":"Pelaporan Keuangan dan Kinerja Instansi Pemerintah","instansi":"Presiden RI","tanggal":"03/03/2006","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://peraturan.bpk.go.id/Details/4565"},{"no":24,"jenis":"Peraturan Daerah","nomor":"2","tahun":"2023","tentang":"Anggaran Pendapatan dan Belanja Daerah Kabupaten Pringsewu Tahun Anggaran 2024","instansi":"Pemkab Pringsewu","tanggal":"20/12/2023","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":25,"jenis":"Peraturan Bupati","nomor":"55","tahun":"2023","tentang":"Penjabaran Anggaran Pendapatan dan Belanja Daerah Kabupaten Pringsewu Tahun 2024","instansi":"Bupati Pringsewu","tanggal":"22/12/2023","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":26,"jenis":"Peraturan Bupati","nomor":"30","tahun":"2022","tentang":"Sistem Akuntansi dan Pelaporan Keuangan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/06/2022","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":27,"jenis":"Peraturan Daerah","nomor":"3","tahun":"2022","tentang":"Pertanggungjawaban Pelaksanaan APBD Kabupaten Pringsewu Tahun Anggaran 2021","instansi":"Pemkab Pringsewu","tanggal":"20/07/2022","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":28,"jenis":"Peraturan Bupati","nomor":"12","tahun":"2021","tentang":"Kebijakan Akuntansi Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"10/03/2021","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":29,"jenis":"Peraturan Pemerintah","nomor":"60","tahun":"2008","tentang":"Sistem Pengendalian Intern Pemerintah (SPIP)","instansi":"Presiden RI","tanggal":"28/08/2008","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://peraturan.bpk.go.id/Details/4873"},{"no":30,"jenis":"Peraturan BPKP","nomor":"1","tahun":"2021","tentang":"Penilaian Maturitas Penyelenggaraan SPIP","instansi":"BPKP","tanggal":"12/01/2021","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://peraturan.bpk.go.id/Details/179430"},{"no":31,"jenis":"Peraturan BPKP","nomor":"3","tahun":"2021","tentang":"Penilaian Kualitas Penerapan SPIP Terintegrasi","instansi":"BPKP","tanggal":"12/03/2021","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://peraturan.bpk.go.id/Details/179432"},{"no":32,"jenis":"Peraturan BPKP","nomor":"5","tahun":"2020","tentang":"Penilaian Maturitas Penerapan Manajemen Risiko","instansi":"BPKP","tanggal":"15/05/2020","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://peraturan.bpk.go.id/Details/175312"},{"no":33,"jenis":"Permenpan-RB","nomor":"5","tahun":"2020","tentang":"Pedoman Manajemen Risiko Sistem Pemerintahan Berbasis Elektronik","instansi":"KemenPAN-RB","tanggal":"05/02/2020","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://peraturan.bpk.go.id/Details/171782"},{"no":34,"jenis":"Peraturan Bupati","nomor":"20","tahun":"2021","tentang":"Penyelenggaraan Sistem Pengendalian Intern Pemerintah di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/05/2021","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://jdih.pringsewukab.go.id"},{"no":35,"jenis":"Peraturan Bupati","nomor":"35","tahun":"2022","tentang":"Manajemen Risiko di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/07/2022","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://jdih.pringsewukab.go.id"},{"no":36,"jenis":"Peraturan Bupati","nomor":"8","tahun":"2023","tentang":"Rencana Tindak Pengendalian SPIP Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"20/02/2023","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://jdih.pringsewukab.go.id"},{"no":37,"jenis":"Peraturan BPKP","nomor":"4","tahun":"2021","tentang":"Penilaian Kapabilitas APIP","instansi":"BPKP","tanggal":"12/04/2021","status":"Masih Berlaku","bidang":"Kapabilitas APIP","link":"https://peraturan.bpk.go.id/Details/180027"},{"no":38,"jenis":"Peraturan BPKP","nomor":"6","tahun":"2022","tentang":"Peningkatan Kapabilitas Aparat Pengawasan Intern Pemerintah","instansi":"BPKP","tanggal":"10/06/2022","status":"Masih Berlaku","bidang":"Kapabilitas APIP","link":"https://peraturan.bpk.go.id"},{"no":39,"jenis":"Permenpan-RB","nomor":"45","tahun":"2013","tentang":"Jabatan Fungsional Auditor dan Angka Kreditnya","instansi":"KemenPAN-RB","tanggal":"20/08/2013","status":"Masih Berlaku","bidang":"Kapabilitas APIP","link":"https://peraturan.bpk.go.id/Details/36890"},{"no":40,"jenis":"Peraturan BPKP","nomor":"2","tahun":"2019","tentang":"Standar Kompetensi Auditor Intern Pemerintah","instansi":"BPKP","tanggal":"20/02/2019","status":"Masih Berlaku","bidang":"Kapabilitas APIP","link":"https://peraturan.bpk.go.id/Details/162345"},{"no":41,"jenis":"Peraturan Bupati","nomor":"15","tahun":"2022","tentang":"Rencana Aksi Peningkatan Kapabilitas APIP Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"10/04/2022","status":"Masih Berlaku","bidang":"Kapabilitas APIP","link":"https://jdih.pringsewukab.go.id"},{"no":42,"jenis":"Peraturan Bupati","nomor":"28","tahun":"2023","tentang":"Program Peningkatan Kompetensi Auditor Inspektorat Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/06/2023","status":"Masih Berlaku","bidang":"Kapabilitas APIP","link":"https://jdih.pringsewukab.go.id"},{"no":43,"jenis":"Undang-Undang","nomor":"5","tahun":"2014","tentang":"Aparatur Sipil Negara","instansi":"DPR RI","tanggal":"15/01/2014","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://peraturan.bpk.go.id/Details/38580"},{"no":44,"jenis":"Peraturan Pemerintah","nomor":"11","tahun":"2017","tentang":"Manajemen Pegawai Negeri Sipil","instansi":"Presiden RI","tanggal":"30/03/2017","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://peraturan.bpk.go.id/Details/18567"},{"no":45,"jenis":"Permenpan-RB","nomor":"8","tahun":"2021","tentang":"Sistem Manajemen Kinerja Pegawai Negeri Sipil","instansi":"KemenPAN-RB","tanggal":"01/04/2021","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://peraturan.bpk.go.id/Details/180412"},{"no":46,"jenis":"Permenpan-RB","nomor":"38","tahun":"2017","tentang":"Standar Kompetensi Jabatan Aparatur Sipil Negara","instansi":"KemenPAN-RB","tanggal":"08/09/2017","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://peraturan.bpk.go.id/Details/107777"},{"no":47,"jenis":"Peraturan Bupati","nomor":"22","tahun":"2021","tentang":"Disiplin Pegawai Negeri Sipil di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/05/2021","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://jdih.pringsewukab.go.id"},{"no":48,"jenis":"Peraturan Bupati","nomor":"40","tahun":"2022","tentang":"Penilaian Kinerja Pegawai Negeri Sipil di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/09/2022","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://jdih.pringsewukab.go.id"},{"no":49,"jenis":"Peraturan Daerah","nomor":"5","tahun":"2019","tentang":"Pengelolaan Kepegawaian Daerah Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"20/07/2019","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://jdih.pringsewukab.go.id"},{"no":50,"jenis":"Standar Audit","nomor":"SAIPI 1000","tahun":"2013","tentang":"Standar Atribut Audit Intern Pemerintah Indonesia","instansi":"BPKP","tanggal":"20/05/2013","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://www.bpkp.go.id/pustakabpkp"},{"no":51,"jenis":"Standar Audit","nomor":"SAIPI 2000","tahun":"2013","tentang":"Standar Kinerja Audit Intern Pemerintah Indonesia","instansi":"BPKP","tanggal":"20/05/2013","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://www.bpkp.go.id/pustakabpkp"},{"no":52,"jenis":"Permenpan-RB","nomor":"9","tahun":"2022","tentang":"Kode Etik Aparat Pengawasan Intern Pemerintah","instansi":"KemenPAN-RB","tanggal":"20/05/2022","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://peraturan.bpk.go.id/Details/187654"},{"no":53,"jenis":"Peraturan BPKP","nomor":"7","tahun":"2021","tentang":"Pedoman Perencanaan Pengawasan Berbasis Risiko","instansi":"BPKP","tanggal":"10/07/2021","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://peraturan.bpk.go.id/Details/183234"},{"no":54,"jenis":"Peraturan BPKP","nomor":"8","tahun":"2021","tentang":"Pedoman Pelaksanaan Audit Berbasis Risiko","instansi":"BPKP","tanggal":"10/08/2021","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://peraturan.bpk.go.id/Details/183456"},{"no":55,"jenis":"Peraturan Bupati","nomor":"10","tahun":"2022","tentang":"Program Kerja Pengawasan Tahunan Inspektorat Kabupaten Pringsewu Tahun 2022","instansi":"Bupati Pringsewu","tanggal":"15/02/2022","status":"Tidak Berlaku","bidang":"Audit Internal","link":"https://jdih.pringsewukab.go.id"},{"no":56,"jenis":"Peraturan Bupati","nomor":"9","tahun":"2023","tentang":"Program Kerja Pengawasan Tahunan Inspektorat Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"10/02/2023","status":"Tidak Berlaku","bidang":"Audit Internal","link":"https://jdih.pringsewukab.go.id"},{"no":57,"jenis":"Peraturan Bupati","nomor":"6","tahun":"2024","tentang":"Program Kerja Pengawasan Tahunan Inspektorat Kabupaten Pringsewu Tahun 2024","instansi":"Bupati Pringsewu","tanggal":"15/01/2024","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://jdih.pringsewukab.go.id"},{"no":58,"jenis":"Peraturan Bupati","nomor":"25","tahun":"2021","tentang":"Tata Cara Pemeriksaan dan Pelaporan Hasil Audit Inspektorat Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"10/06/2021","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://jdih.pringsewukab.go.id"},{"no":59,"jenis":"Permendagri","nomor":"10","tahun":"2018","tentang":"Reviu atas Dokumen Perencanaan Pembangunan dan Anggaran Daerah Tahunan","instansi":"Kemendagri","tanggal":"10/02/2018","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://peraturan.bpk.go.id/Details/124890"},{"no":60,"jenis":"Peraturan BPKP","nomor":"2","tahun":"2021","tentang":"Petunjuk Teknis Reviu atas Penyerapan Anggaran Pemerintah Daerah","instansi":"BPKP","tanggal":"12/02/2021","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://peraturan.bpk.go.id/Details/179431"},{"no":61,"jenis":"Instruksi Mendagri","nomor":"2","tahun":"2021","tentang":"Percepatan Pelaksanaan Reviu Laporan Keuangan Pemerintah Daerah","instansi":"Kemendagri","tanggal":"05/02/2021","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://jdih.kemendagri.go.id"},{"no":62,"jenis":"Surat Edaran BPKP","nomor":"SE-03","tahun":"2020","tentang":"Pedoman Reviu Laporan Keuangan Pemerintah Daerah oleh APIP","instansi":"BPKP","tanggal":"10/03/2020","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://www.bpkp.go.id"},{"no":63,"jenis":"Peraturan Bupati","nomor":"16","tahun":"2022","tentang":"Tata Cara Reviu Laporan Keuangan Pemerintah Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/04/2022","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://jdih.pringsewukab.go.id"},{"no":64,"jenis":"Peraturan Bupati","nomor":"33","tahun":"2021","tentang":"Pedoman Reviu Rencana Kerja dan Anggaran Perangkat Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/07/2021","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://jdih.pringsewukab.go.id"},{"no":65,"jenis":"Peraturan Bupati","nomor":"48","tahun":"2022","tentang":"Reviu atas Dokumen Perencanaan Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/10/2022","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://jdih.pringsewukab.go.id"},{"no":66,"jenis":"Peraturan Bupati","nomor":"11","tahun":"2023","tentang":"Tata Cara Reviu Laporan Akuntabilitas Kinerja Instansi Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"10/03/2023","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://jdih.pringsewukab.go.id"},{"no":67,"jenis":"Perpres","nomor":"29","tahun":"2014","tentang":"Sistem Akuntabilitas Kinerja Instansi Pemerintah","instansi":"Presiden RI","tanggal":"12/04/2014","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://peraturan.bpk.go.id/Details/41825"},{"no":68,"jenis":"Permenpan-RB","nomor":"53","tahun":"2014","tentang":"Petunjuk Teknis Perjanjian Kinerja, Pelaporan Kinerja dan Reviu atas Laporan Kinerja","instansi":"KemenPAN-RB","tanggal":"20/11/2014","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://peraturan.bpk.go.id/Details/39145"},{"no":69,"jenis":"Permendagri","nomor":"86","tahun":"2017","tentang":"Tata Cara Perencanaan, Pengendalian dan Evaluasi Pembangunan Daerah","instansi":"Kemendagri","tanggal":"20/11/2017","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://peraturan.bpk.go.id/Details/115890"},{"no":70,"jenis":"Permenpan-RB","nomor":"12","tahun":"2015","tentang":"Pedoman Evaluasi atas Implementasi SAKIP","instansi":"KemenPAN-RB","tanggal":"20/05/2015","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://peraturan.bpk.go.id/Details/56780"},{"no":71,"jenis":"Peraturan Bupati","nomor":"19","tahun":"2022","tentang":"Rencana Kerja Pemerintah Daerah Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"20/07/2022","status":"Tidak Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://jdih.pringsewukab.go.id"},{"no":72,"jenis":"Peraturan Bupati","nomor":"21","tahun":"2023","tentang":"Rencana Kerja Pemerintah Daerah Kabupaten Pringsewu Tahun 2024","instansi":"Bupati Pringsewu","tanggal":"20/07/2023","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://jdih.pringsewukab.go.id"},{"no":73,"jenis":"Peraturan Bupati","nomor":"44","tahun":"2021","tentang":"Perjanjian Kinerja dan Evaluasi Akuntabilitas Kinerja di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/10/2021","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://jdih.pringsewukab.go.id"},{"no":74,"jenis":"Peraturan Daerah","nomor":"1","tahun":"2021","tentang":"Rencana Pembangunan Jangka Menengah Daerah Kabupaten Pringsewu Tahun 2021-2026","instansi":"Pemkab Pringsewu","tanggal":"15/09/2021","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://jdih.pringsewukab.go.id"},{"no":75,"jenis":"Peraturan BPKP","nomor":"11","tahun":"2020","tentang":"Pedoman Audit Ketaatan Penggunaan Anggaran Pemerintah Daerah","instansi":"BPKP","tanggal":"10/11/2020","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://peraturan.bpk.go.id/Details/179234"},{"no":76,"jenis":"Standar Audit","nomor":"SAIPI 2300","tahun":"2013","tentang":"Standar Pelaksanaan Audit Ketaatan Intern Pemerintah","instansi":"BPKP","tanggal":"20/05/2013","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://www.bpkp.go.id/pustakabpkp"},{"no":77,"jenis":"Permendagri","nomor":"77","tahun":"2020","tentang":"Pedoman Teknis Pengelolaan Keuangan Daerah","instansi":"Kemendagri","tanggal":"20/12/2020","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://peraturan.bpk.go.id/Details/179567"},{"no":78,"jenis":"Peraturan BPK","nomor":"2","tahun":"2017","tentang":"Standar Pemeriksaan Ketaatan","instansi":"BPK RI","tanggal":"16/01/2017","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://peraturan.bpk.go.id/Details/90186"},{"no":79,"jenis":"Peraturan Bupati","nomor":"37","tahun":"2021","tentang":"Tata Cara Pengelolaan Belanja Tidak Terduga Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/08/2021","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://jdih.pringsewukab.go.id"},{"no":80,"jenis":"Peraturan Bupati","nomor":"26","tahun":"2022","tentang":"Pedoman Pelaksanaan Audit Kepatuhan di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/06/2022","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://jdih.pringsewukab.go.id"},{"no":81,"jenis":"Peraturan Daerah","nomor":"6","tahun":"2020","tentang":"Pengelolaan Barang Milik Daerah Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"10/10/2020","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://jdih.pringsewukab.go.id"},{"no":82,"jenis":"Peraturan BPK","nomor":"3","tahun":"2017","tentang":"Pedoman Pemeriksaan Kinerja","instansi":"BPK RI","tanggal":"16/01/2017","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://peraturan.bpk.go.id/Details/90187"},{"no":83,"jenis":"Peraturan BPKP","nomor":"13","tahun":"2021","tentang":"Pedoman Audit Kinerja Program Pemerintah","instansi":"BPKP","tanggal":"10/10/2021","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://peraturan.bpk.go.id/Details/183678"},{"no":84,"jenis":"Permenpan-RB","nomor":"35","tahun":"2018","tentang":"Evaluasi Akuntabilitas Kinerja Instansi Pemerintah","instansi":"KemenPAN-RB","tanggal":"10/08/2018","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://peraturan.bpk.go.id/Details/124890"},{"no":85,"jenis":"Standar Audit","nomor":"SAIPI 2400","tahun":"2013","tentang":"Standar Pelaksanaan Audit Kinerja Intern Pemerintah","instansi":"BPKP","tanggal":"20/05/2013","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://www.bpkp.go.id/pustakabpkp"},{"no":86,"jenis":"Peraturan Bupati","nomor":"32","tahun":"2022","tentang":"Pedoman Evaluasi Kinerja Perangkat Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/07/2022","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://jdih.pringsewukab.go.id"},{"no":87,"jenis":"Peraturan Bupati","nomor":"14","tahun":"2023","tentang":"Penetapan Indikator Kinerja Utama Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"20/03/2023","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://jdih.pringsewukab.go.id"},{"no":88,"jenis":"Peraturan Daerah","nomor":"2","tahun":"2021","tentang":"Rencana Pembangunan Jangka Panjang Daerah Kabupaten Pringsewu 2005-2025","instansi":"Pemkab Pringsewu","tanggal":"15/04/2021","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://jdih.pringsewukab.go.id"},{"no":89,"jenis":"Undang-Undang","nomor":"31","tahun":"1999","tentang":"Pemberantasan Tindak Pidana Korupsi","instansi":"DPR RI","tanggal":"16/08/1999","status":"Masih Berlaku","bidang":"Audit Investigatif","link":"https://peraturan.bpk.go.id/Details/45123"},{"no":90,"jenis":"Undang-Undang","nomor":"20","tahun":"2001","tentang":"Perubahan atas UU No.31 Tahun 1999 tentang Pemberantasan Tindak Pidana Korupsi","instansi":"DPR RI","tanggal":"21/11/2001","status":"Masih Berlaku","bidang":"Audit Investigatif","link":"https://peraturan.bpk.go.id/Details/45124"},{"no":91,"jenis":"Peraturan BPKP","nomor":"17","tahun":"2017","tentang":"Pedoman Audit Investigatif","instansi":"BPKP","tanggal":"10/07/2017","status":"Masih Berlaku","bidang":"Audit Investigatif","link":"https://peraturan.bpk.go.id/Details/107234"},{"no":92,"jenis":"Peraturan Kepala BPKP","nomor":"PER-09","tahun":"2016","tentang":"Petunjuk Pelaksanaan Audit Investigatif atas Indikasi Tindak Pidana Korupsi","instansi":"BPKP","tanggal":"10/06/2016","status":"Masih Berlaku","bidang":"Audit Investigatif","link":"https://www.bpkp.go.id"},{"no":93,"jenis":"Peraturan Bupati","nomor":"38","tahun":"2022","tentang":"Tata Cara Penanganan Pengaduan Masyarakat di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/08/2022","status":"Masih Berlaku","bidang":"Audit Investigatif","link":"https://jdih.pringsewukab.go.id"},{"no":94,"jenis":"Peraturan Bupati","nomor":"50","tahun":"2021","tentang":"Whistleblowing System di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/11/2021","status":"Masih Berlaku","bidang":"Audit Investigatif","link":"https://jdih.pringsewukab.go.id"},{"no":95,"jenis":"Peraturan Daerah","nomor":"3","tahun":"2019","tentang":"Pencegahan dan Pemberantasan Korupsi di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"20/06/2019","status":"Masih Berlaku","bidang":"Audit Investigatif","link":"https://jdih.pringsewukab.go.id"},{"no":96,"jenis":"Undang-Undang","nomor":"6","tahun":"2014","tentang":"Desa","instansi":"DPR RI","tanggal":"15/01/2014","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://peraturan.bpk.go.id/Details/38580"},{"no":97,"jenis":"Peraturan Pemerintah","nomor":"43","tahun":"2014","tentang":"Peraturan Pelaksanaan Undang-Undang Desa","instansi":"Presiden RI","tanggal":"30/05/2014","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://peraturan.bpk.go.id/Details/41678"},{"no":98,"jenis":"Permendagri","nomor":"20","tahun":"2018","tentang":"Pengelolaan Keuangan Desa","instansi":"Kemendagri","tanggal":"20/04/2018","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://peraturan.bpk.go.id/Details/124802"},{"no":99,"jenis":"Peraturan BPKP","nomor":"21","tahun":"2018","tentang":"Pedoman Pengawasan Intern Dana Desa","instansi":"BPKP","tanggal":"15/08/2018","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://peraturan.bpk.go.id/Details/124901"},{"no":100,"jenis":"Permendesa","nomor":"19","tahun":"2021","tentang":"Prioritas Penggunaan Dana Desa Tahun 2022","instansi":"Kemendesa PDTT","tanggal":"27/10/2021","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://peraturan.bpk.go.id/Details/183901"},{"no":101,"jenis":"Instruksi Mendagri","nomor":"4","tahun":"2022","tentang":"Percepatan Pelaksanaan Pengawasan Dana Desa oleh Inspektorat Daerah","instansi":"Kemendagri","tanggal":"20/04/2022","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.kemendagri.go.id"},{"no":102,"jenis":"Peraturan Daerah","nomor":"7","tahun":"2019","tentang":"Pedoman Pembentukan dan Pengelolaan Badan Usaha Milik Desa di Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"20/10/2019","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.pringsewukab.go.id"},{"no":103,"jenis":"Peraturan Bupati","nomor":"4","tahun":"2023","tentang":"Tata Cara Pembagian dan Penetapan Rincian Dana Desa Setiap Desa di Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"15/01/2023","status":"Tidak Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.pringsewukab.go.id"},{"no":104,"jenis":"Peraturan Bupati","nomor":"2","tahun":"2024","tentang":"Tata Cara Pembagian dan Penetapan Rincian Dana Desa Setiap Desa di Kabupaten Pringsewu Tahun 2024","instansi":"Bupati Pringsewu","tanggal":"10/01/2024","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.pringsewukab.go.id"},{"no":105,"jenis":"Peraturan Bupati","nomor":"45","tahun":"2021","tentang":"Tata Cara Pengawasan Pengelolaan Keuangan Desa oleh Inspektorat Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"25/10/2021","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.pringsewukab.go.id"},{"no":106,"jenis":"Peraturan Bupati","nomor":"13","tahun":"2022","tentang":"Prioritas Penggunaan Dana Desa dan Alokasi Dana Desa di Kabupaten Pringsewu Tahun 2022","instansi":"Bupati Pringsewu","tanggal":"20/03/2022","status":"Tidak Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.pringsewukab.go.id"},{"no":107,"jenis":"Perpres","nomor":"16","tahun":"2018","tentang":"Pengadaan Barang/Jasa Pemerintah","instansi":"Presiden RI","tanggal":"16/03/2018","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://peraturan.bpk.go.id/Details/124347"},{"no":108,"jenis":"Perpres","nomor":"12","tahun":"2021","tentang":"Perubahan Atas Perpres No.16 Tahun 2018 tentang Pengadaan Barang/Jasa Pemerintah","instansi":"Presiden RI","tanggal":"16/02/2021","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://peraturan.bpk.go.id/Details/179347"},{"no":109,"jenis":"Peraturan Kepala BPKP","nomor":"PER-14","tahun":"2015","tentang":"Pedoman Pelaksanaan Probity Audit Pengadaan Barang/Jasa Pemerintah","instansi":"BPKP","tanggal":"10/09/2015","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://www.bpkp.go.id"},{"no":110,"jenis":"Peraturan BPKP","nomor":"24","tahun":"2020","tentang":"Petunjuk Teknis Probity Audit Pengadaan Barang/Jasa Bernilai Tinggi","instansi":"BPKP","tanggal":"20/04/2020","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://peraturan.bpk.go.id/Details/175234"},{"no":111,"jenis":"Peraturan BPKP","nomor":"25","tahun":"2022","tentang":"Pedoman Probity Audit Proyek Strategis Nasional","instansi":"BPKP","tanggal":"20/08/2022","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://peraturan.bpk.go.id/Details/195678"},{"no":112,"jenis":"Peraturan Bupati","nomor":"29","tahun":"2022","tentang":"Tata Cara Pelaksanaan Pengadaan Barang/Jasa Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/06/2022","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://jdih.pringsewukab.go.id"},{"no":113,"jenis":"Peraturan Bupati","nomor":"52","tahun":"2021","tentang":"Pedoman Probity Audit Pengadaan Barang/Jasa di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"25/11/2021","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://jdih.pringsewukab.go.id"},{"no":114,"jenis":"Peraturan Daerah","nomor":"4","tahun":"2020","tentang":"Pengelolaan Pengadaan Barang/Jasa Pemerintah Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"15/07/2020","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://jdih.pringsewukab.go.id"},{"no":115,"jenis":"Peraturan Bupati","nomor":"17","tahun":"2023","tentang":"Pedoman Gratifikasi di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/04/2023","status":"Masih Berlaku","bidang":"Audit Investigatif","link":"https://jdih.pringsewukab.go.id"},{"no":116,"jenis":"Peraturan Bupati","nomor":"36","tahun":"2022","tentang":"Zona Integritas Menuju WBK dan WBBM Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/08/2022","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":117,"jenis":"Peraturan Bupati","nomor":"49","tahun":"2021","tentang":"Rencana Aksi Daerah Pencegahan dan Pemberantasan Korupsi Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/11/2021","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":118,"jenis":"Peraturan Daerah","nomor":"8","tahun":"2018","tentang":"Anggaran Pendapatan dan Belanja Daerah Kabupaten Pringsewu Tahun 2019","instansi":"Pemkab Pringsewu","tanggal":"20/12/2018","status":"Tidak Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":119,"jenis":"Peraturan Bupati","nomor":"60","tahun":"2022","tentang":"Standar Biaya Umum Kabupaten Pringsewu Tahun Anggaran 2023","instansi":"Bupati Pringsewu","tanggal":"20/12/2022","status":"Tidak Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":120,"jenis":"Peraturan Bupati","nomor":"57","tahun":"2023","tentang":"Standar Biaya Umum Kabupaten Pringsewu Tahun Anggaran 2024","instansi":"Bupati Pringsewu","tanggal":"20/12/2023","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":121,"jenis":"Peraturan Bupati","nomor":"43","tahun":"2021","tentang":"Sistem dan Prosedur Pengelolaan Keuangan Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/10/2021","status":"Masih Berlaku","bidang":"Pemeriksaan Keuangan","link":"https://jdih.pringsewukab.go.id"},{"no":122,"jenis":"Peraturan Bupati","nomor":"23","tahun":"2022","tentang":"Rencana Strategis Inspektorat Kabupaten Pringsewu Tahun 2021-2026","instansi":"Bupati Pringsewu","tanggal":"20/05/2022","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://jdih.pringsewukab.go.id"},{"no":123,"jenis":"Peraturan Bupati","nomor":"31","tahun":"2023","tentang":"Standar Operasional Prosedur Inspektorat Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/07/2023","status":"Masih Berlaku","bidang":"Audit Internal","link":"https://jdih.pringsewukab.go.id"},{"no":124,"jenis":"Peraturan Bupati","nomor":"46","tahun":"2021","tentang":"Penyelenggaraan SPIP di Satuan Kerja Perangkat Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"25/10/2021","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://jdih.pringsewukab.go.id"},{"no":125,"jenis":"Peraturan Bupati","nomor":"24","tahun":"2023","tentang":"Rencana Tindak Pengendalian SPIP Kabupaten Pringsewu Tahun 2024","instansi":"Bupati Pringsewu","tanggal":"15/06/2023","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://jdih.pringsewukab.go.id"},{"no":126,"jenis":"Peraturan Bupati","nomor":"41","tahun":"2022","tentang":"Identifikasi Risiko Korupsi di Lingkungan Pemerintah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/09/2022","status":"Masih Berlaku","bidang":"SPIP & MR","link":"https://jdih.pringsewukab.go.id"},{"no":127,"jenis":"Peraturan Bupati","nomor":"27","tahun":"2022","tentang":"Pengembangan Kompetensi ASN Inspektorat Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"15/06/2022","status":"Masih Berlaku","bidang":"Kapabilitas APIP","link":"https://jdih.pringsewukab.go.id"},{"no":128,"jenis":"Peraturan Bupati","nomor":"39","tahun":"2023","tentang":"Standar Kompetensi Auditor Inspektorat Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/09/2023","status":"Masih Berlaku","bidang":"Kapabilitas APIP","link":"https://jdih.pringsewukab.go.id"},{"no":129,"jenis":"Peraturan Daerah","nomor":"9","tahun":"2018","tentang":"Penyelenggaraan Ketertiban Umum dan Ketentraman Masyarakat Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"20/12/2018","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://jdih.pringsewukab.go.id"},{"no":130,"jenis":"Peraturan Bupati","nomor":"47","tahun":"2022","tentang":"Tata Tertib dan Kode Etik Pegawai ASN Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/10/2022","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://jdih.pringsewukab.go.id"},{"no":131,"jenis":"Peraturan Bupati","nomor":"53","tahun":"2021","tentang":"Pemberian Tunjangan Daerah ASN Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"25/12/2021","status":"Masih Berlaku","bidang":"Pengawasan SDM","link":"https://jdih.pringsewukab.go.id"},{"no":132,"jenis":"Peraturan Bupati","nomor":"34","tahun":"2022","tentang":"Reviu atas Dokumen RPJMD dan Renstra Perangkat Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/07/2022","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://jdih.pringsewukab.go.id"},{"no":133,"jenis":"Peraturan Bupati","nomor":"56","tahun":"2023","tentang":"Reviu Laporan Keuangan Pemerintah Daerah Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"20/12/2023","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://jdih.pringsewukab.go.id"},{"no":134,"jenis":"Peraturan Bupati","nomor":"18","tahun":"2023","tentang":"Tata Cara Reviu Anggaran Kas dan Anggaran Perangkat Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/04/2023","status":"Masih Berlaku","bidang":"Riviu Pemerintah Daerah","link":"https://jdih.pringsewukab.go.id"},{"no":135,"jenis":"Peraturan Bupati","nomor":"58","tahun":"2022","tentang":"Monitoring dan Evaluasi Pelaksanaan APBD Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"20/12/2022","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://jdih.pringsewukab.go.id"},{"no":136,"jenis":"Peraturan Bupati","nomor":"54","tahun":"2023","tentang":"Laporan Kinerja Instansi Pemerintah Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"20/12/2023","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://jdih.pringsewukab.go.id"},{"no":137,"jenis":"Peraturan Daerah","nomor":"10","tahun":"2021","tentang":"Pokok-Pokok Pengelolaan Keuangan Daerah Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"20/12/2021","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://jdih.pringsewukab.go.id"},{"no":138,"jenis":"Peraturan Bupati","nomor":"51","tahun":"2022","tentang":"Tata Cara Pelaksanaan Audit Ketaatan Pengadaan Barang/Jasa Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"25/11/2022","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://jdih.pringsewukab.go.id"},{"no":139,"jenis":"Peraturan Bupati","nomor":"59","tahun":"2021","tentang":"Tata Cara Pengelolaan Hibah dan Bantuan Sosial Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"25/12/2021","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://jdih.pringsewukab.go.id"},{"no":140,"jenis":"Peraturan Daerah","nomor":"11","tahun":"2020","tentang":"Pengelolaan Aset Daerah Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"20/11/2020","status":"Masih Berlaku","bidang":"Audit Ketaatan","link":"https://jdih.pringsewukab.go.id"},{"no":141,"jenis":"Peraturan Bupati","nomor":"62","tahun":"2022","tentang":"Standar Indikator Kinerja Utama Perangkat Daerah Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"30/12/2022","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://jdih.pringsewukab.go.id"},{"no":142,"jenis":"Peraturan Bupati","nomor":"16","tahun":"2023","tentang":"Evaluasi Kinerja Program Prioritas Kabupaten Pringsewu Tahun 2022","instansi":"Bupati Pringsewu","tanggal":"20/04/2023","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://jdih.pringsewukab.go.id"},{"no":143,"jenis":"Peraturan Bupati","nomor":"61","tahun":"2021","tentang":"Penilaian Kinerja Unit Kerja Pelayanan Publik Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"30/12/2021","status":"Masih Berlaku","bidang":"Audit Kinerja","link":"https://jdih.pringsewukab.go.id"},{"no":144,"jenis":"Peraturan Bupati","nomor":"1","tahun":"2024","tentang":"Dana Desa Kabupaten Pringsewu Tahun Anggaran 2024","instansi":"Bupati Pringsewu","tanggal":"02/01/2024","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.pringsewukab.go.id"},{"no":145,"jenis":"Peraturan Bupati","nomor":"63","tahun":"2022","tentang":"Pengawasan Pengelolaan Keuangan Desa di Kabupaten Pringsewu Tahun 2023","instansi":"Bupati Pringsewu","tanggal":"31/12/2022","status":"Tidak Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.pringsewukab.go.id"},{"no":146,"jenis":"Peraturan Bupati","nomor":"64","tahun":"2023","tentang":"Pengawasan Pengelolaan Keuangan Desa di Kabupaten Pringsewu Tahun 2024","instansi":"Bupati Pringsewu","tanggal":"31/12/2023","status":"Masih Berlaku","bidang":"Audit Dana Desa","link":"https://jdih.pringsewukab.go.id"},{"no":147,"jenis":"Peraturan Bupati","nomor":"55","tahun":"2021","tentang":"Pengadaan Barang/Jasa Pemerintah Secara Elektronik Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"25/12/2021","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://jdih.pringsewukab.go.id"},{"no":148,"jenis":"Peraturan Bupati","nomor":"65","tahun":"2022","tentang":"Pedoman Probity Audit Pengadaan Barang/Jasa Strategis Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"31/12/2022","status":"Masih Berlaku","bidang":"Probity Audit","link":"https://jdih.pringsewukab.go.id"},{"no":149,"jenis":"Peraturan Daerah","nomor":"12","tahun":"2019","tentang":"Pelayanan Publik Kabupaten Pringsewu","instansi":"Pemkab Pringsewu","tanggal":"20/12/2019","status":"Masih Berlaku","bidang":"Pengawasan Umum","link":"https://jdih.pringsewukab.go.id"},{"no":150,"jenis":"Peraturan Bupati","nomor":"66","tahun":"2023","tentang":"Penerapan Sistem Pemerintahan Berbasis Elektronik Kabupaten Pringsewu","instansi":"Bupati Pringsewu","tanggal":"31/12/2023","status":"Masih Berlaku","bidang":"Monitoring dan Evaluasi","link":"https://jdih.pringsewukab.go.id"}];
+let RAW = [];
+let activeBidang = new Set(['ALL']);
+let activeStatus = new Set(['Masih Berlaku','Tidak Berlaku']);
+let activeJenis  = new Set(['ALL']);
+let currentView  = 'table';
+const LS_KEY = 'apip_sheet_url';
+
+const BIDANG_COLORS = {
+  'Pengawasan Umum':'#1D4ED8','Pemeriksaan Keuangan':'#15803D','SPIP & MR':'#B45309',
+  'Kapabilitas APIP':'#6D28D9','Pengawasan SDM':'#0369A1','Audit Internal':'#475569',
+  'Riviu Pemerintah Daerah':'#0F766E','Monitoring dan Evaluasi':'#0D7377',
+  'Audit Ketaatan':'#C2410C','Audit Kinerja':'#7C3AED',
+  'Audit Investigatif':'#DC2626','Audit Dana Desa':'#A16207','Probity Audit':'#0369A1',
+};
+function gc(b){return BIDANG_COLORS[b]||'#475569'}
+function jClass(j){
+  if(j==='Undang-Undang')return'uu';
+  if(j==='Peraturan Pemerintah')return'pp';
+  if(j==='Peraturan Bupati')return'perbup';
+  if(j==='Peraturan Daerah')return'perda';
+  if(j.includes('Surat Edaran'))return'se';
+  if(j.includes('Peraturan'))return'per';
+  return'';
+}
+
+// ════════════════════════════════════════════════
+// CSV PARSER — cocok dengan format Google Sheets
+// ════════════════════════════════════════════════
+function parseCSV(text){
+  // Split baris, handle \r\n dan \n
+  const lines = text.trim().split(/\r?\n/);
+
+  // Fungsi split satu baris CSV (handle quoted fields)
+  function splitLine(line){
+    const cols=[];
+    let cur='', inQ=false;
+    for(let c=0;c<line.length;c++){
+      const ch=line[c];
+      if(ch==='"'&&inQ&&line[c+1]==='"'){cur+='"';c++;}
+      else if(ch==='"'){inQ=!inQ;}
+      else if(ch===','&&!inQ){cols.push(cur.trim());cur='';}
+      else{cur+=ch;}
+    }
+    cols.push(cur.trim());
+    return cols;
+  }
+
+  // Cari baris header — baris yang mengandung kolom utama
+  // Bisa di baris 0, 1, 2, atau 3 tergantung format sheet
+  const HEADER_KEYWORDS = ['jenis','nomor','tahun','tentang','instansi','status','bidang'];
+  let headerIdx = -1;
+  for(let i=0;i<Math.min(lines.length,6);i++){
+    const low = lines[i].toLowerCase();
+    const matches = HEADER_KEYWORDS.filter(k=>low.includes(k)).length;
+    if(matches >= 3){ headerIdx = i; break; }
+  }
+
+  // Kalau tidak ketemu header, coba anggap baris pertama yang punya banyak koma
+  if(headerIdx === -1){
+    for(let i=0;i<Math.min(lines.length,6);i++){
+      if((lines[i].match(/,/g)||[]).length >= 6){ headerIdx = i; break; }
+    }
+  }
+  if(headerIdx === -1) headerIdx = 0;
+
+  // Parse header untuk cari posisi kolom
+  const headerCols = splitLine(lines[headerIdx]).map(h=>h.toLowerCase().replace(/[^a-z]/g,''));
+  
+  // Mapping nama kolom ke indeks — fleksibel
+  function findCol(keywords){
+    for(const kw of keywords){
+      const idx = headerCols.findIndex(h=>h.includes(kw));
+      if(idx>=0) return idx;
+    }
+    return -1;
+  }
+
+  const iNo      = findCol(['no']);
+  const iJenis   = findCol(['jenis']);
+  const iNomor   = findCol(['nomor']);
+  const iTahun   = findCol(['tahun']);
+  const iTentang = findCol(['tentang']);
+  const iInstansi= findCol(['instansi']);
+  const iTanggal = findCol(['tanggal']);
+  const iStatus  = findCol(['status']);
+  const iBidang  = findCol(['bidang']);
+  const iLink    = findCol(['link','download','url']);
+
+  // Fallback: kalau tidak ada header sama sekali, pakai posisi default
+  // (No=0,Jenis=1,Nomor=2,Tahun=3,Tentang=4,Instansi=5,Tanggal=6,Status=7,Bidang=8,Link=9)
+  const getCol = (r,i,fallback) => i>=0 && i<r.length ? r[i]||'' : (fallback<r.length?r[fallback]||'':'');
+
+  const data = [];
+  let autoNo = 0;
+  for(let i=headerIdx+1;i<lines.length;i++){
+    if(!lines[i].trim()) continue;
+    const r = splitLine(lines[i]);
+    
+    const jenis   = getCol(r,iJenis,1);
+    const tentang = getCol(r,iTentang,4);
+    const status  = getCol(r,iStatus,7);
+    const bidang  = getCol(r,iBidang,8);
+
+    // Skip baris yang tidak punya data penting
+    if(!jenis && !tentang) continue;
+    // Skip baris yang terlihat seperti header duplikat
+    if(jenis.toLowerCase().includes('jenis')) continue;
+
+    autoNo++;
+    data.push({
+      no:      parseInt(getCol(r,iNo,0))||autoNo,
+      jenis:   jenis,
+      nomor:   getCol(r,iNomor,2),
+      tahun:   getCol(r,iTahun,3),
+      tentang: tentang,
+      instansi:getCol(r,iInstansi,5),
+      tanggal: getCol(r,iTanggal,6),
+      status:  status,
+      bidang:  bidang,
+      link:    getCol(r,iLink,9)
+    });
+  }
+  return data;
+}
+
+// ════════════════════════════════════════════════
+// KONEKSI KE GOOGLE SHEETS
+// cara dapat URL:
+//   1. Buka Google Sheets
+//   2. File → Share → Publish to web
+//   3. Pilih sheet "DATABASE" → format CSV
+//   4. Klik Publish → copy URL
+//   5. Tempel di kotak input atas, tekan Enter
+// ════════════════════════════════════════════════
+async function connectSheet(url){
+  if(!url){
+    setSyncStatus('waiting','⚠️  Tempel URL Google Sheets CSV di kotak input, lalu tekan Enter atau klik Sync');
+    return;
+  }
+  localStorage.setItem(LS_KEY, url);
+  document.getElementById('sheet-url-input').value = url;
+  setSyncStatus('loading','⏳  Mengambil data dari Google Sheets…');
+  showLoading(true);
+
+  // Daftar proxy CORS — dicoba satu per satu sampai berhasil
+  const PROXIES = [
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://thingproxy.freeboard.io/fetch/${u}`,
+    u => u,
+  ];
+
+  let lastErr = '';
+  for(const makeUrl of PROXIES){
+    try{
+      const fetchUrl = makeUrl(url);
+      const res = await fetch(fetchUrl, {cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const text = await res.text();
+      // Validasi: hasil harus CSV beneran bukan HTML error page
+      if(text.trim().startsWith('<')) throw new Error('Bukan CSV (dapat HTML)');
+      const data = parseCSV(text);
+      if(!data.length) throw new Error('Data kosong');
+      RAW = data;
+      const ts = new Date().toLocaleTimeString('id-ID');
+      setSyncStatus('ok',`✅  Terhubung · ${data.length} peraturan · Diperbarui ${ts}`);
+      init();
+      showLoading(false);
+      return; // sukses, berhenti
+    }catch(e){
+      lastErr = e.message;
+      console.warn('Proxy gagal:', makeUrl(url), e.message);
+    }
+  }
+
+  // Semua proxy gagal → pakai data lokal
+  setSyncStatus('err',`❌  Tidak dapat terhubung (${lastErr}). Menampilkan data lokal.`);
+  RAW = FALLBACK;
+  init();
+  showLoading(false);
+}
+
+function setSyncStatus(state, msg){
+  const bar = document.getElementById('sync-bar');
+  bar.className = state==='ok'?'ok':state==='err'?'err':'';
+  document.getElementById('sync-status').textContent = msg;
+}
+
+function showLoading(v){
+  document.getElementById('loading').style.display = v?'block':'none';
+  document.getElementById('table-view').style.display = (!v&&currentView==='table')?'block':'none';
+  if(!v&&currentView==='card'){
+    document.getElementById('card-view').classList.add('active');
+  }
+}
+
+// ════════════════════════════════════════════════
+// INIT — jalankan setelah data tersedia
+// ════════════════════════════════════════════════
+function init(){
+  updateStats();
+  buildChips();
+  applyFilters();
+}
+
+function updateStats(){
+  const total   = RAW.length;
+  const berlaku = RAW.filter(d=>d.status==='Masih Berlaku').length;
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-berlaku').textContent = berlaku;
+  document.getElementById('stat-tidak').textContent   = total-berlaku;
+}
+
+// ════════════════════════════════════════════════
+// CHIPS FILTER
+// ════════════════════════════════════════════════
+function buildChips(){
+  const BIDANG_LIST = [...new Set(RAW.map(d=>d.bidang))].filter(Boolean).sort();
+  const bc = document.getElementById('bidang-chips');
+  bc.innerHTML = `<button class="chip active" onclick="toggleBidang('ALL',this)">Semua</button>`;
+  BIDANG_LIST.forEach(b=>{
+    bc.innerHTML += `<button class="chip" onclick="toggleBidang('${b}',this)">${b}</button>`;
+  });
+
+  const JENIS_LIST_SHORT = ['Undang-Undang','Peraturan Pemerintah','Perpres','Permendagri','Peraturan Bupati','Peraturan Daerah'];
+  const jc = document.getElementById('jenis-chips');
+  jc.innerHTML = `<button class="chip active" onclick="toggleJenis('ALL',this)">Semua</button>`;
+  JENIS_LIST_SHORT.forEach(j=>{
+    jc.innerHTML += `<button class="chip" onclick="toggleJenis('${j}',this)">${j}</button>`;
+  });
+}
+
+function toggleBidang(val,el){
+  if(val==='ALL'){
+    activeBidang=new Set(['ALL']);
+    document.querySelectorAll('#bidang-chips .chip').forEach(c=>c.classList.remove('active'));
+  }else{
+    activeBidang.delete('ALL');
+    document.querySelector('#bidang-chips .chip').classList.remove('active');
+    activeBidang.has(val)?activeBidang.delete(val):activeBidang.add(val);
+    if(!activeBidang.size){activeBidang.add('ALL');document.querySelector('#bidang-chips .chip').classList.add('active')}
+  }
+  el.classList.toggle('active',activeBidang.has(val)||val==='ALL'&&activeBidang.has('ALL'));
+  applyFilters();
+}
+function toggleJenis(val,el){
+  if(val==='ALL'){
+    activeJenis=new Set(['ALL']);
+    document.querySelectorAll('#jenis-chips .chip').forEach(c=>c.classList.remove('active'));
+  }else{
+    activeJenis.delete('ALL');
+    document.querySelector('#jenis-chips .chip').classList.remove('active');
+    activeJenis.has(val)?activeJenis.delete(val):activeJenis.add(val);
+    if(!activeJenis.size){activeJenis.add('ALL');document.querySelector('#jenis-chips .chip').classList.add('active')}
+  }
+  el.classList.toggle('active',activeJenis.has(val)||val==='ALL'&&activeJenis.has('ALL'));
+  applyFilters();
+}
+function toggleStatus(val,el){
+  activeStatus.has(val)?activeStatus.delete(val):activeStatus.add(val);
+  el.classList.toggle('active',activeStatus.has(val));
+  applyFilters();
+}
+
+// ════════════════════════════════════════════════
+// FILTER + SORT
+// ════════════════════════════════════════════════
+function getFiltered(){
+  const q=document.getElementById('search-input').value.toLowerCase().trim();
+  const sort=document.getElementById('sort-sel').value;
+  let res=RAW.filter(d=>{
+    const bMatch=activeBidang.has('ALL')||activeBidang.has(d.bidang);
+    const sMatch=activeStatus.has(d.status);
+    const jMatch=activeJenis.has('ALL')||activeJenis.has(d.jenis);
+    const qMatch=!q||[d.tentang,d.jenis,d.nomor,d.tahun,d.instansi,d.bidang].some(v=>v.toLowerCase().includes(q));
+    return bMatch&&sMatch&&jMatch&&qMatch;
+  });
+  if(sort==='tahun-desc')res.sort((a,b)=>parseInt(b.tahun)-parseInt(a.tahun));
+  else if(sort==='tahun-asc')res.sort((a,b)=>parseInt(a.tahun)-parseInt(b.tahun));
+  else if(sort==='jenis')res.sort((a,b)=>a.jenis.localeCompare(b.jenis));
+  else if(sort==='bidang')res.sort((a,b)=>a.bidang.localeCompare(b.bidang));
+  else res.sort((a,b)=>a.no-b.no);
+  return res;
+}
+
+function applyFilters(){
+  const data=getFiltered();
+  document.getElementById('result-count').textContent=data.length+' hasil';
+  if(currentView==='table')renderTable(data);
+  else renderCards(data);
+}
+
+// ════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════
+function renderTable(data){
+  const tbody=document.getElementById('table-body');
+  const empty=document.getElementById('empty');
+  tbody.innerHTML='';
+  empty.style.display=data.length?'none':'block';
+  data.forEach((d,i)=>{
+    const isOn=d.status==='Masih Berlaku';
+    const hasLink=d.link&&d.link.startsWith('http');
+    const color=gc(d.bidang);
+    const tr=document.createElement('tr');
+    tr.className='row-appear';
+    tr.style.animationDelay=Math.min(i*.02,.3)+'s';
+    tr.innerHTML=`
+      <td class="no-col">${d.no}</td>
+      <td><span class="badge badge-jenis ${jClass(d.jenis)}">${d.jenis}</span></td>
+      <td class="nomor-col">No.${d.nomor}<br><small style="color:var(--gray-l);font-size:.7rem">${d.tanggal}</small></td>
+      <td class="tentang-col"><div class="title">${d.tentang}</div></td>
+      <td class="hide-sm" style="font-size:.78rem;color:var(--gray)">${d.instansi}</td>
+      <td class="status-col hide-sm"><span class="badge ${isOn?'badge-status-on':'badge-status-off'}">${isOn?'✅ Berlaku':'❌ Tidak Berlaku'}</span></td>
+      <td class="bidang-col"><span class="badge" style="background:${color}18;color:${color};border:1px solid ${color}44;border-radius:6px;font-size:.7rem;white-space:normal">${d.bidang}</span></td>
+      <td class="link-col">${hasLink?`<a class="link-btn" href="${d.link}" target="_blank" rel="noopener">⬇ Buka</a>`:`<span class="link-btn disabled">—</span>`}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderCards(data){
+  const cv=document.getElementById('card-view');
+  cv.innerHTML='';
+  data.forEach((d,i)=>{
+    const isOn=d.status==='Masih Berlaku';
+    const hasLink=d.link&&d.link.startsWith('http');
+    const color=gc(d.bidang);
+    const card=document.createElement('div');
+    card.className='pcard row-appear';
+    card.style.cssText=`border-top-color:${color};animation-delay:${Math.min(i*.03,.4)}s`;
+    card.innerHTML=`
+      <div class="pcard-header"><span class="badge badge-jenis ${jClass(d.jenis)}">${d.jenis}</span><span class="badge ${isOn?'badge-status-on':'badge-status-off'}">${isOn?'✅':'❌'}</span></div>
+      <div class="pcard-title">${d.tentang}</div>
+      <div class="pcard-meta">
+        <span class="badge" style="background:${color}18;color:${color};border:1px solid ${color}44;font-size:.7rem">${d.bidang}</span>
+        <span class="badge badge-jenis" style="font-size:.7rem">No.${d.nomor} · ${d.tahun}</span>
+      </div>
+      <div class="pcard-foot"><span class="pcard-instansi">🏛 ${d.instansi}</span>${hasLink?`<a class="link-btn" href="${d.link}" target="_blank" rel="noopener">⬇ Buka</a>`:`<span class="link-btn disabled">—</span>`}</div>`;
+    cv.appendChild(card);
+  });
+}
+
+function setView(v){
+  currentView=v;
+  document.getElementById('table-view').style.display=v==='table'?'block':'none';
+  document.getElementById('card-view').classList.toggle('active',v==='card');
+  document.getElementById('btn-table').classList.toggle('active',v==='table');
+  document.getElementById('btn-card').classList.toggle('active',v==='card');
+  applyFilters();
+}
+
+function showSection(v,btn){
+  document.querySelectorAll('#topbar nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('db-section').style.display=v==='db'?'block':'none';
+  document.getElementById('stats-view').style.display=v==='stats'?'block':'none';
+  if(v==='stats')buildStats();
+}
+
+// ════════════════════════════════════════════════
+// STATISTIK
+// ════════════════════════════════════════════════
+function buildStats(){
+  const BIDANG_LIST=[...new Set(RAW.map(d=>d.bidang))].filter(Boolean).sort();
+  const JENIS_LIST=[...new Set(RAW.map(d=>d.jenis))].filter(Boolean).sort();
+  const INSTANSI_LIST=[...new Set(RAW.map(d=>d.instansi))].filter(Boolean).sort();
+  const maxB=Math.max(...BIDANG_LIST.map(b=>RAW.filter(d=>d.bidang===b).length));
+  document.getElementById('bidang-stat-grid').innerHTML=BIDANG_LIST.map(b=>{
+    const cnt=RAW.filter(d=>d.bidang===b).length;
+    const on=RAW.filter(d=>d.bidang===b&&d.status==='Masih Berlaku').length;
+    const c=gc(b);
+    return`<div class="stat-item" style="border-left-color:${c}"><div class="s-label">${b}</div><div class="s-val" style="color:${c}">${cnt}</div><div style="font-size:.72rem;color:var(--gray);margin-top:.2rem">${on} berlaku</div><div class="s-bar"><div class="s-fill" style="width:${Math.round(cnt/maxB*100)}%;background:${c}"></div></div></div>`;
+  }).join('');
+  const maxJ=Math.max(...JENIS_LIST.map(j=>RAW.filter(d=>d.jenis===j).length));
+  document.getElementById('jenis-stat-grid').innerHTML=JENIS_LIST.map(j=>{
+    const cnt=RAW.filter(d=>d.jenis===j).length;
+    return`<div class="stat-item"><div class="s-label">${j}</div><div class="s-val">${cnt}</div><div class="s-bar"><div class="s-fill" style="width:${Math.round(cnt/maxJ*100)}%"></div></div></div>`;
+  }).join('');
+  const maxI=Math.max(...INSTANSI_LIST.map(i=>RAW.filter(d=>d.instansi===i).length));
+  document.getElementById('instansi-stat-grid').innerHTML=INSTANSI_LIST.map(ins=>{
+    const cnt=RAW.filter(d=>d.instansi===ins).length;
+    return`<div class="stat-item" style="border-left-color:var(--gold)"><div class="s-label">${ins}</div><div class="s-val" style="color:var(--navy)">${cnt}</div><div class="s-bar"><div class="s-fill" style="width:${Math.round(cnt/maxI*100)}%;background:var(--gold)"></div></div></div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════
+// STARTUP — cek localStorage dulu
+// ════════════════════════════════════════════════
+(function startup(){
+  const saved = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRADrE7FH1XvLZfB58GQyOxn_m52QdWQ9LOQGEpfl11h7JAYVzjo4P40K9SlZ6K6A/pub?output=csv';
+  if(saved){
+    document.getElementById('sheet-url-input').value = saved;
+    connectSheet(saved);
+  }else{
+    // Pakai data fallback (dari Excel)
+    setSyncStatus('waiting','💾  Menggunakan data lokal. Tempel URL Google Sheets di atas untuk sync otomatis.');
+    RAW = FALLBACK;
+    showLoading(false);
+    document.getElementById('table-view').style.display='block';
+    init();
+  }
+})();
+</script>
+</body>
+</html>
